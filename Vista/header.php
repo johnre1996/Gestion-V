@@ -26,10 +26,11 @@ $objeto = new rol();
   <link href="Cliente/css/style.css" rel="stylesheet">
   <link href="Cliente/css/style-responsive.css" rel="stylesheet">
   <link href="Cliente/css/sweetalert.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="Cliente/css/bootstrap-datepicker.min.css?ff=ff" />
   <script src="Cliente/lib/jquery/jquery.min.js"></script>
   <script src="Cliente/js/sweetalert.min.js"></script>
  <script src="Cliente/js/sweetalert.js"></script>
-
+ <script type="text/javascript" src="Cliente/lib/bootstrap-datepicker.js?dsd=ds"></script>
 
   <!-- =======================================================
     Template Name: Dashio

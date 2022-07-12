@@ -1,7 +1,0 @@
-$(document).on("ready", Primera);
-
-
-function Primera() {
-    alert("llega");
-}
-
