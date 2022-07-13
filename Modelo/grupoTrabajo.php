@@ -17,59 +17,79 @@
             return $resultado;
         }
 
-        public function CargarUsuarios(){
+        public function CargarGrupoUsuarios(){
             global $conexion; 
             $consulta = "SELECT * FROM usuarios";
             $resultado = pg_query($conexion,$consulta);            
             return $resultado;
         }
 
-        public function ListarUsuarios(){
+        public function ListarGrupoTrabajos(){
             global $conexion; 
-            $consulta = "select b.descripcion as rol,a.* from usuarios a
-            inner join roles b on b.id_rol=a.id_rol
-            order by id_usuario desc";
-            $resultado = pg_query($conexion,$consulta);            
+            $consulta = "SELECT
+            A.GRUPO_ID,
+            A.NOMBRE AS NOMBRE_GRUPO,
+            CONCAT_WS(' ',B.APELLIDO,B.NOMBRE) AS JEFE_GUARDIA,
+            CONCAT_WS(' ',C.APELLIDO,C.NOMBRE) AS SUBALTERNO,
+            CONCAT_WS(' ',D.NOMBRES,' ') AS CUARTELERO,
+            '' AS FECHA_CREACION,
+            A.ESTATUS AS ESTADO
+            FROM GRUPO_TRABAJO A
+            LEFT JOIN JEFE_GUARDIAS B ON B.JEFE_GUARDIAS_ID=A.JEFE_GUARDIAS_ID
+            LEFT JOIN SUBALTERNO C ON C.SUBALTERNO_ID=A.SUBALTERNO_ID
+            LEFT JOIN USUARIOS D ON D.ID_USUARIO=A.CUARTELERO_ID";
+            $resultado = pg_query($conexion,$consulta);
             return $resultado;
         }
 
         public function Registrar(
-            $cboIdRol,
-            $txtNombre,
-            $txtCorreo,
-            $txtCelular,
-            $txtUsuario,
-            $txtClave,
-            $cboEst
+            $txtNombreGrupo,
+            $cboJefeGuardia,
+            $cboSubAlterno,
+            $cboCuartelero,
+            $detalleGrupo
         ){
             global $conexion; 
-            $consulta = "
-            insert into usuarios (id_rol,nombres,correo,telefono,usuario,clave,estado)
-            values ($cboIdRol,'$txtNombre','$txtCorreo','$txtCelular','$txtUsuario','$txtClave',1)
+            $consulta = "insert into grupo_trabajo (nombre,jefe_guardias_id,subalterno_id,cuartelero_id,fecha_creacion,estatus)
+            values ('$txtNombreGrupo',$cboJefeGuardia,$cboSubAlterno,$cboCuartelero,now(),1)
             ";
-            $resultado = pg_query($conexion,$consulta);            
-            return $resultado;
+            $resultado = pg_query($conexion,$consulta);
+
+            if($resultado){
+                if(!empty($detalleGrupo)){
+                    foreach ($detalleGrupo as $indice => $val) {
+                        $consulta2 = "with grupo_id as (select max(grupo_id) from grupo_trabajo)
+                                    insert into grupo_trabajo_detalle(grupo_id,personal_id)
+                                     values((select * from grupo_id),$val[0])";
+                        $resultado2 = pg_query($conexion, $consulta2);
+                    }
+
+                }else{
+                    $consulta2 = "select id_rol from roles order by id_rol desc limit 1";
+                    $resultado2 = pg_query($conexion,$consulta2);
+                }
+            }
+
+            return $resultado2;
         }
 
         public function Modificar(
-            $idUsuario,
-            $cboIdRol,
-            $txtNombre,
-            $txtCorreo,
-            $txtCelular,
-            $txtUsuario,
-            $txtClave,
-            $cboEst
+            $txtIdGrupo,
+            $txtNombreGrupo,
+            $cboJefeGuardia,
+            $cboSubAlterno,
+            $cboCuartelero,
+            $detalleGrupo
         ){
             global $conexion; 
             $consulta = "update usuarios set id_rol=$cboIdRol,nombres='$txtNombre',correo='$txtCorreo',telefono='$txtCelular',
             estado=$cboEst
-            where id_usuario=$idUsuario;";
+            where id_usuario=$idGrupoTrabajo;";
             $resultado = pg_query($conexion,$consulta);            
             return $resultado;
         }
         
-        public function EditarUsuario($id){
+        public function EditarGrupoTrabajo($id){
             global $conexion; 
             $consulta = "select b.descripcion as rol,a.*
             from usuarios a

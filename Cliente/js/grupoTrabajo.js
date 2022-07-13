@@ -3,9 +3,9 @@ arrayPersonalG = new Array();
 
 function Primera() {
     $("#formulario").hide();
-    ListarUsuarios();
+    ListarGrupoTrabajos();
     $("#botonNew").click(MostarFormulario);
-    $("form#formularioUsu").submit(GuardarUsuario);
+    $("form#formularioUsu").submit(GuardarGrupoTrabajo);
     $("#cboPersonalG").change(SeleccionarUsuario);
     
 }
@@ -16,10 +16,10 @@ function MostarFormulario() {
     $("#lista").hide();
     $("#campoEstado").hide();
     $("#campoClave").show();
-    $("#txtUsuarioId").attr("readonly", false);
+    $("#txtGrupoTrabajoId").attr("readonly", false);
     CargarJefeGuardia();
     CargarSubAlterno();
-    CargarUsuarios();
+    CargarGrupoUsuarios();
 }
 
 function OcultarFormulario() {
@@ -33,7 +33,7 @@ function LimpiarFormulario() {
     $("#txtNombreId").val("");
     $("#txtCorreoId").val("");
     $("#txtCelularId").val("");
-    $("#txtUsuarioId").val("");
+    $("#txtGrupoTrabajoId").val("");
     $("#txtClaveId").val("");
     $("#cboEstId").val(1);
     
@@ -51,44 +51,44 @@ function CargarSubAlterno() {
     });
 }
 
-function CargarUsuarios() {
-    $.post('./Controlador/grupoTrabajo.php?chasi=CargarUsuarios',function(r) {
+function CargarGrupoUsuarios() {
+    $.post('./Controlador/grupoTrabajo.php?chasi=CargarGrupoUsuarios',function(r) {
         $("#cboCuartelero").html(r);
         $("#cboPersonalG").html(r);
     });
 }
 
-function ListarUsuarios() {
-    $.post('./Controlador/grupoTrabajo.php?chasi=ListarUsuarios',function(r) {
-        $("#dataUsuario").html(r);
+function ListarGrupoTrabajos() {
+    $.post('./Controlador/grupoTrabajo.php?chasi=ListarGrupoTrabajos',function(r) {
+        $("#datagrupoTrabajo").html(r);
     });
 }
 
-function GuardarUsuario(a) {
+function GuardarGrupoTrabajo(a) {
     a.preventDefault();
     //console.log($("#formularioUsu").serialize());
-    $.post('./Controlador/grupoTrabajo.php?chasi=GuardarUsuario',$("#formularioUsu").serialize(), function(r) {
+    $.post('./Controlador/grupoTrabajo.php?chasi=GuardarGrupoTrabajo',$("#formularioUsu").serialize()  + '&detalleGrupo=' + JSON.stringify(arrayPersonalG) , function(r) {
         swal("Mensaje del Sistema", r, "success");
         OcultarFormulario();
         LimpiarFormulario();
-        ListarUsuarios();
+        ListarGrupoTrabajos();
     });
 }
 
-function EditarUsuario(id) {
+function EditarGrupoTrabajo(id) {
     $("#formulario").show();
     $("#botonNew").hide();
     $("#lista").hide();
     $("#campoEstado").show();
     $("#campoClave").hide();
-    $("#txtUsuarioId").attr("readonly", true);
-    $.post('./Controlador/grupoTrabajo.php?chasi=EditarUsuario',{id:id}, function(r) {
+    $("#txtGrupoTrabajoId").attr("readonly", true);
+    $.post('./Controlador/grupoTrabajo.php?chasi=EditarGrupoTrabajo',{id:id}, function(r) {
          var info = $.parseJSON(r);
         $("#txtIdUsuId").val(info.id_usuario);
         $("#txtNombreId").val(info.nombres);
         $("#txtCorreoId").val(info.correo);
         $("#txtCelularId").val(info.telefono);
-        $("#txtUsuarioId").val(info.usuario);
+        $("#txtGrupoTrabajoId").val(info.usuario);
         $("#txtClaveId").val("dsdsds5d");
         
         $("#cboJefeGuardia").val(info.id_rol);
@@ -98,7 +98,7 @@ function EditarUsuario(id) {
     });
 }
 
-function EliminarUsuario(id) {
+function EliminarGrupoTrabajo(id) {
     swal({
         title: "¿Seguro que deseas eliminar el registro?",
         text: "Esta acción no se puede revertir...",
@@ -109,9 +109,9 @@ function EliminarUsuario(id) {
         confirmButtonText: "Confirmar",
         closeOnConfirm: false },
         function(){
-            $.post('./Controlador/grupoTrabajo.php?chasi=EliminarUsuario', { id: id }, function(r) {
+            $.post('./Controlador/grupoTrabajo.php?chasi=EliminarGrupoTrabajo', { id: id }, function(r) {
                 swal("Mensaje del Sistema", r, "success");
-                ListarUsuarios();
+                ListarGrupoTrabajos();
             });
         });
 }

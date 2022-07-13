@@ -20,15 +20,15 @@
             }
             break;
 
-        case "CargarUsuarios":
-            $info = $modelo->CargarUsuarios();
+        case "CargarGrupoUsuarios":
+            $info = $modelo->CargarGrupoUsuarios();
             while ($dataModel = pg_fetch_object($info)) {
                 echo '<option value="' . $dataModel->id_usuario . '">' . $dataModel->nombres . '</option>';
             }
             break;
             
-        case "ListarUsuarios":
-            $info = $modelo->ListarUsuarios();
+        case "ListarGrupoTrabajos":
+            $info = $modelo->ListarGrupoTrabajos();
             while ($dataModel = pg_fetch_object($info)) {
                 if($dataModel->estado == 1){
                     $estado='Activo';
@@ -37,15 +37,15 @@
                 }
                 echo '
                 <tr>
-                    <th>'.$dataModel->nombres.'</th>
-                    <th>'.$dataModel->correo.'</th>
-                    <th>'.$dataModel->telefono.'</th>
-                    <th>'.$dataModel->usuario.'</th>
-                    <th>'.$dataModel->rol.'</th>
+                    <th>'.$dataModel->nombre_grupo.'</th>
+                    <th>'.$dataModel->jefe_guardia.'</th>
+                    <th>'.$dataModel->subalterno.'</th>
+                    <th></th>
+                    <th>'.$dataModel->cuartelero.'</th>
                     <th>'.$estado.'</th>
                     <th>
-                        <button type="button" onClick="EditarUsuario('.$dataModel->id_usuario.');" class="btn btn-primary btn-xs">Editar</button>
-                        <button type="button" onClick="EliminarUsuario('.$dataModel->id_usuario.');" class="btn btn-danger btn-xs">Eliminar</button>
+                        <button type="button" onClick="EditarGrupoTrabajo('.$dataModel->grupo_id.');" class="btn btn-primary btn-xs">Editar</button>
+                        <button type="button" onClick="EliminarGrupoTrabajo('.$dataModel->grupo_id.');" class="btn btn-danger btn-xs">Eliminar</button>
                     </th>
                 </tr>
                 ';
@@ -53,61 +53,54 @@
             break;
             
 
-        case 'GuardarUsuario':
+        case 'GuardarGrupoTrabajo':
           
     
-            $cboIdRol = $_POST["cboIdRol"];
-            $txtNombre = $_POST["txtNombre"];
-            $txtCorreo = $_POST["txtCorreo"];
-            $txtCelular = $_POST["txtCelular"];
-            $txtUsuario = $_POST["txtUsuario"];
-            $txtClave = $_POST["txtClave"];
-            $cboEst = $_POST["cboEst"];
+            $txtNombreGrupo = $_POST["txtNombreGrupo"];
+            $cboJefeGuardia = $_POST["cboJefeGuardia"];
+            $cboSubAlterno = $_POST["cboSubAlterno"];
+            $cboCuartelero = $_POST["cboCuartelero"];
+            $detalleGrupo = json_decode($_POST["detalleGrupo"]);
             
-            if (empty($_POST["txtIdUsu"])) {
+            if (empty($_POST["txtIdGrupo"])) {
     
                 if ($modelo->Registrar(
-                    $cboIdRol,
-                    $txtNombre,
-                    $txtCorreo,
-                    $txtCelular,
-                    $txtUsuario,
-                    $txtClave,
-                    $cboEst
+                    $txtNombreGrupo,
+                    $cboJefeGuardia,
+                    $cboSubAlterno,
+                    $cboCuartelero,
+                    $detalleGrupo
                 )) {
                     echo "Registrado Exitosamente";
                 } else {
-                    echo "Usuario no ha podido ser registado.";
+                    echo "Grupo Trabajo no ha podido ser registado.";
                 }
             } else {
-    
                 if ($modelo->Modificar(
-                    $_POST["txtIdUsu"],
-                    $cboIdRol,
-                    $txtNombre,
-                    $txtCorreo,
-                    $txtCelular,
-                    $txtUsuario,
-                    $txtClave,
-                    $cboEst
+                    $_POST["txtIdGrupo"],
+                    $txtNombreGrupo,
+                    $cboJefeGuardia,
+                    $cboSubAlterno,
+                    $cboCuartelero,
+                    $detalleGrupo
                 )) {
-                    echo "Informacion del Usuario ha sido actualizada";
+                    echo "Informacion del Grupo Trabajo ha sido actualizada";
                 } else {
-                    echo "Informacion del usuario no ha podido ser actualizada.";
+                    echo "Informacion del Grupo Trabajo no ha podido ser actualizada.";
                 }
             }
     
             break;
 
-        case 'EditarUsuario':
+        case 'EditarGrupoTrabajo':
               
             $id = $_POST["id"];
-            $info = $modelo->EditarUsuario($id);
+            $info = $modelo->EditarGrupoTrabajo($id);
             $dataModel = pg_fetch_object($info);
             echo json_encode($dataModel);
             break;
         
-        case 'EliminarUsuario':
+        case 'EliminarGrupoTrabajo':
               
             $id = $_POST["id"];
 
@@ -116,7 +109,7 @@
             )) {
                 echo "Eliminado Exitosamente";
             } else {
-                echo "Usuario no ha podido ser eliminado.";
+                echo "GrupoTrabajo no ha podido ser eliminado.";
             }
             break;
 
