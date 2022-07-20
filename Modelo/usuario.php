@@ -76,5 +76,44 @@
             $resultado = pg_query($conexion,$consulta);            
             return $resultado;
         }
+
+        function RecoveryPasswordEmail($recoveryPassword){
+            global $conexion;
+            
+            $consulta = " SELECT 
+            (SELECT COUNT(id_usuario) FROM usuarios
+             WHERE correo='$recoveryPassword'  AND char_length(correo)>2) AS num
+            ";
+            $resultado = pg_query($conexion,$consulta);
+            return $resultado;
+        }
+
+        function EnviarCorreoRecuperarCon($correo){
+            global $conexion;
+            
+            $consulta = "select usuario,correo
+            from usuarios
+            where correo like '%$correo%'
+            ";
+            $resultado = pg_query($conexion,$consulta);
+            return $resultado;
+        }
+
+        function RecoveryXEmail($recoveryPassword){
+            global $conexion;
+            
+            $sql = "select id_usuario from usuarios where correo='$recoveryPassword';
+            ";
+            $query = pg_query($conexion,$sql);
+    
+            return $query;
+        }
+
+        function ModificarPass($correo, $txtConfirmarPass,$usuario){
+            global $conexion;
+            $sql = "update usuarios set clave = '$txtConfirmarPass' where correo='$correo' AND usuario='$usuario' ";
+            $query = pg_query($conexion,$sql);
+            return $query;
+        }
     }
 ?>

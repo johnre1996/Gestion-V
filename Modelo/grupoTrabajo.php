@@ -82,19 +82,29 @@
             $detalleGrupo
         ){
             global $conexion; 
-            $consulta = "update usuarios set id_rol=$cboIdRol,nombres='$txtNombre',correo='$txtCorreo',telefono='$txtCelular',
-            estado=$cboEst
-            where id_usuario=$idGrupoTrabajo;";
+            $consulta = "update usuarios ";
             $resultado = pg_query($conexion,$consulta);            
             return $resultado;
         }
         
         public function EditarGrupoTrabajo($id){
             global $conexion; 
-            $consulta = "select b.descripcion as rol,a.*
-            from usuarios a
-            inner join roles b on b.id_rol=a.id_rol
-            where a.id_usuario=$id;";
+            $consulta = "SELECT
+            A.GRUPO_ID,
+            A.NOMBRE AS NOMBRE_GRUPO,
+			A.JEFE_GUARDIAS_ID,
+            CONCAT_WS(' ',B.APELLIDO,B.NOMBRE) AS JEFE_GUARDIA,
+			A.SUBALTERNO_ID,
+            CONCAT_WS(' ',C.APELLIDO,C.NOMBRE) AS SUBALTERNO,
+			A.CUARTELERO_ID,
+            CONCAT_WS(' ',D.NOMBRES,' ') AS CUARTELERO,
+            A.FECHA_CREACION AS FECHA_CREACION,
+            A.ESTATUS AS ESTADO
+            FROM GRUPO_TRABAJO A
+            LEFT JOIN JEFE_GUARDIAS B ON B.JEFE_GUARDIAS_ID=A.JEFE_GUARDIAS_ID
+            LEFT JOIN SUBALTERNO C ON C.SUBALTERNO_ID=A.SUBALTERNO_ID
+            LEFT JOIN USUARIOS D ON D.ID_USUARIO=A.CUARTELERO_ID
+			WHERE A.GRUPO_ID=$id;";
             $resultado = pg_query($conexion,$consulta);            
             return $resultado;
         }

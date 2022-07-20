@@ -1,10 +1,27 @@
 <?php
     session_start();
     require_once "../Modelo/usuario.php";
-
+    require 'vendor/autoload.php';
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
+    use PHPMailer\PHPMailer\Exception;
     $modelo = new usuario();
 
     switch ($_GET["chasi"]) {
+
+        case 'SaveOrUpdatePass':
+
+            $pass = $_POST["txtConfirmarPass"];
+            $correo = $_POST["mail"];
+            $usuario = $_POST["usuario"];
+            $query = $modelo->ModificarPass($correo, $pass, $usuario);
+            if ($query) {
+                $data = array("ind" => '1', "Mensaje" => "Exitoso");
+            } else {
+                $data = array("ind" => '0', "Mensaje" => "Error  ");
+            }
+            echo json_encode($data);
+            break;
 
         case 'inicio':
             
@@ -130,11 +147,84 @@
             }
             break;
 
+        case "RecoveryPasswordEmail":
+            $recoveryPassword = $_POST["recoveryPassword"];
+            $query = $modelo->RecoveryPasswordEmail($recoveryPassword);
+            $reg = pg_fetch_object($query);
+        
+            if ($reg->num == 1) {
+    
+                EnviarCorreoRecuperarPass($recoveryPassword);
+    
+                $query1 = $modelo->RecoveryXEmail($recoveryPassword);
+    
+                if ($query1) {
+                    $data = array("ind" => '1', "Mensaje" => "Correo con link de recuperación enviado");
+                } else {
+                    $data = array("ind" => '0', "Mensaje" => "Error al Encontrar Informacione.");
+                }
+            } else {
+    
+                $data = array("ind" => '0', "Mensaje" => "Error al Encontrar Información.");
+            }
+            echo json_encode($data);
+            break;
+
         case 'cerrarsesion':
             //vaciar valores de las sesiones
             session_unset();
             
             session_destroy();
-            header("Location:../login.html");
+            header("Location:../index.html");
         break;    
     }
+
+    function EnviarCorreoRecuperarPass($correo)
+{
+
+	$mail = new PHPMailer(true); 
+	require_once "../Modelo/usuario.php";
+	$modelo = new usuario();
+	$query = $modelo->EnviarCorreoRecuperarCon($correo);
+	$reg2 = pg_fetch_object($query);
+ 
+
+	$html = '
+		<table align="center" width="600">
+		<tr>
+		<td width="200">';
+
+	$html .= '<p style="font-size: 25px;">GESTION VEHICULAR<br><br>';
+	$html .= '<p style="font-size: 20px; color: #000000; text-align: center;">Solicitu de restablecimeinto de correo.<br><br>';
+	$html .= 'Coordinar con el administrador si no solicitó el cambio<br><br>';
+	$html .= 'Haz clic en el enlace de abajo para continuar<br>';
+
+	$html .= '<a href="http://localhost/Gestion-V/Recuperacion/index.html?correo=' . $correo . '&usuario=' . $reg2->usuario . '" >Cambiar Clave</a>';
+
+	$html .= '</td>
+		</tr>
+			</table>
+			';
+
+	ob_start();
+
+	try {
+		$mail->isSMTP(); 
+		$mail->CharSet = 'UTF-8';
+		$mail->Host = 'smtp.office365.com';
+		$mail->SMTPAuth = true;
+		$mail->Username = 'joalex-17@hotmail.com';
+		$mail->Password = 'aqui va la clave';
+		$mail->SMTPSecure = 'STARTTLS';
+		$mail->Port = 587;
+		$mail->setFrom('joalex-17@hotmail.com', 'GESTION VEHICULAR');
+		$mail->addAddress($correo); 
+		$mail->isHTML(true);
+		$mail->Subject = 'Cambio de Clave';
+		$mail->Body    = $html;
+		$mail->AltBody = '';
+		$mail->send();
+	} catch (Exception $e) {
+	}
+	
+}

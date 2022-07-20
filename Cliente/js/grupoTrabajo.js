@@ -4,6 +4,9 @@ arrayPersonalG = new Array();
 function Primera() {
     $("#formulario").hide();
     ListarGrupoTrabajos();
+    CargarJefeGuardia();
+    CargarSubAlterno();
+    CargarGrupoUsuarios();
     $("#botonNew").click(MostarFormulario);
     $("form#formularioUsu").submit(GuardarGrupoTrabajo);
     $("#cboPersonalG").change(SeleccionarUsuario);
@@ -15,11 +18,7 @@ function MostarFormulario() {
     $("#botonNew").hide();
     $("#lista").hide();
     $("#campoEstado").hide();
-    $("#campoClave").show();
     $("#txtGrupoTrabajoId").attr("readonly", false);
-    CargarJefeGuardia();
-    CargarSubAlterno();
-    CargarGrupoUsuarios();
 }
 
 function OcultarFormulario() {
@@ -80,22 +79,31 @@ function EditarGrupoTrabajo(id) {
     $("#botonNew").hide();
     $("#lista").hide();
     $("#campoEstado").show();
-    $("#campoClave").hide();
-    $("#txtGrupoTrabajoId").attr("readonly", true);
     $.post('./Controlador/grupoTrabajo.php?chasi=EditarGrupoTrabajo',{id:id}, function(r) {
          var info = $.parseJSON(r);
-        $("#txtIdUsuId").val(info.id_usuario);
-        $("#txtNombreId").val(info.nombres);
-        $("#txtCorreoId").val(info.correo);
-        $("#txtCelularId").val(info.telefono);
-        $("#txtGrupoTrabajoId").val(info.usuario);
-        $("#txtClaveId").val("dsdsds5d");
-        
-        $("#cboJefeGuardia").val(info.id_rol);
+        $("#txtIdGrupo").val(info.grupo_id);
+        $("#txtNombreGrupo").val(info.nombre_grupo);
+        $("#cboJefeGuardia").val(info.jefe_guardias_id);
         $("#cboJefeGuardia").trigger("change");
-        $("#cboEstId").val(info.estado);
-        $("#cboEstId").trigger("change");
+        $("#cboSubAlterno").val(info.subalterno_id);
+        $("#cboSubAlterno").trigger("change");
+        $("#cboCuartelero").val(info.cuartelero_id);
+        $("#cboCuartelero").trigger("change");
+        CargarPersonalDetalle(id);
     });
+}
+
+function CargarPersonalDetalle(id) {
+	$.post("./ajax/VentaAjax.php?op=CargarDetalleEdicion", {
+		id: id
+	}, function (r) {
+		var s = $.parseJSON(r);
+		elementos.length = 0;
+		for (i = 0; i <= s.length; i++) {
+			AgregarDetalle(s[i][0], s[i][1], s[i][2], s[i][3], s[i][4], s[i][5], s[i][6], s[i][7], s[i][8], s[i][9], s[i][10], s[i][11], s[i][12], s[i][13], s[i][14], s[i][15], s[i][16]);
+		}
+	});
+	CargarDetalleFormaPagoVenta(idVenta);
 }
 
 function EliminarGrupoTrabajo(id) {

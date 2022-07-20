@@ -100,7 +100,7 @@ $objeto = new rol();
               <span>Gestiòn Guardiania</span>
               </a>
             <ul class="sub">
-              <li><a href="blank.html">Orden de trabajo</a></li>
+              <li><a href="grupoTrabajo.php">Grupo trabajo</a></li>
             </ul>
           </li>
           <li class="mt">

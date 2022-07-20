@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Dashboard">
+  <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+  <title>Login</title>
+
+  <!-- Favicons -->
+  <link href="../Client/img/favicon.png" rel="icon">
+  <link href="../img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Bootstrap core CSS -->
+  <link href="../Cliente/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--external css-->
+  <link href="../Cliente/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="../Cliente/css/style.css" rel="stylesheet">
+  <link href="../Cliente/css/style-responsive.css" rel="stylesheet">
+
+  <link href="../Cliente/css/sweetalert.css" rel="stylesheet">
+
+  
+  <!-- =======================================================
+    Template Name: Dashio
+    Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
+    Author: TemplateMag.com
+    License: https://templatemag.com/license/
+  ======================================================= -->
+</head>
+
+<body>
+  <!-- **********************************************************************************************************************************************************
+      MAIN CONTENT
+      *********************************************************************************************************************************************************** -->
+    <div id="login-page">
+    <div class="container">
+      <form class="form-login" id="formularioCambioPass" name="formularioCambioPass">
+        <h2 class="form-login-heading">Cambio de clave</h2>
+        <div class="login-wrap">
+          <input type="hidden" id="txtCorreo" name="txtCorreo">
+          <input type="hidden" id="htxtUsuarioNew" name="htxtUsuarioNew">
+          <input type="password" class="form-control" id="txtNuevoPass" required autofocus>
+          <br>
+            <input type="password" class="form-control" id="txtConfirmarPass" required >
+          <br>
+          <button class="btn btn-danger btn-block" id="botonCambiarCl" type="submit"><i class="fa fa-lock"></i> Cambiar</button>
+          <hr>
+
+          <div id="resultCambioCla">
+          </div>
+              
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- js placed at the end of the document so the pages load faster -->
+  <script src="../Cliente/lib/jquery/jquery.min.js"></script>
+  <script src="../Cliente/lib/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../Cliente/js/sweetalert.min.js"></script>
+  <script src="../Cliente/js/sweetalert.js"></script>
+
+  
+  <!--BACKSTRETCH-->
+  <!-- You can use an image of whatever size. This script will stretch to fit in any screen size.-->
+  <script type="text/javascript"> 
+     $(document).on("ready", Cargar);
+    function Cargar(){
+        $(window).load(function() {
+          var url_string1 = window.location.href;
+          var url1 = new URL(url_string1);
+          var emailC1 = url1.searchParams.get("correo");
+          var usuario1 = url1.searchParams.get("usuario");
+
+          $("#txtCorreo").val(emailC1);
+          $("#htxtUsuarioNew").val(usuario1);
+
+          CorreoGeneral = emailC1;
+          UserGeneral = usuario1;
+
+          history.pushState(null, "", "index.html");
+        });
+
+        $("form#formularioCambioPass").submit(SaveOrUpdatePass);
+
+
+    }
+
+  function SaveOrUpdatePass(zzz) {
+      zzz.preventDefault();
+      var data = {
+          txtConfirmarPass: $("#txtConfirmarPass").val(),
+          mail: $("#txtCorreo").val(),
+          usuario: $("#htxtUsuarioNew").val(),
+      };
+      if ($("#txtNuevoPass").val() == $("#txtConfirmarPass").val()) {
+          // $.unblockUI();
+          $.post("../Controlador/usuario.php?chasi=SaveOrUpdatePass", data, function(r) {
+              console.log(r);
+              var s = $.parseJSON(r);
+              if (s.ind == "1") {
+                  $("#resultCambioCla").html(
+                      '<div class="box bg-light-info text-info">La clave Fue Cambiada exitosamente</div>'
+                  );
+                  $("#botonCambiarCl").attr('disabled', true);
+              }
+          });
+      } else {
+          $("#resultCambioCla").html(
+              '<div class="box bg-light-danger text-danger">Las contraseñas no coinciden</div>'
+          );
+      }
+  }
+     
+  </script>
+  <script type="text/javascript" src="../Cliente/lib/jquery.backstretch.min.js"></script>
+  <script>
+    $.backstretch("../Cliente/img/login-bgg.jpg", {
+      speed: 500
+    });
+  </script>
+</body>
+
+</html>
