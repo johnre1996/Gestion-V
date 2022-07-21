@@ -127,7 +127,6 @@
         var recoveryPassword = $("#emailRecup").val();
         $.post("Controlador/usuario.php?chasi=RecoveryPasswordEmail", { recoveryPassword: recoveryPassword },
             function(r) {
-              alert(r);
                 var s = $.parseJSON(r);
                 if (s.ind == "1") {
                     $("#resultEnvio").html(
