@@ -91,6 +91,9 @@ $objeto = new rol();
                 <li><a href="Usuario.php">Usuarios</a></li>
               <?php } ?>
             <?php } ?>
+              <li><a href="marca.php">Marca</a></li>
+              <li><a href="vehiculo.php">Vehiculo</a></li>
+
             </ul>
           </li>
           <?php } ?>
