@@ -4,71 +4,22 @@
     $modelo = new marca();
 
     switch ($_GET["chasi"]) {
-
-        case 'SaveOrUpdatePass':
-
-            $pass = $_POST["txtConfirmarPass"];
-            $correo = $_POST["mail"];
-            $usuario = $_POST["usuario"];
-            $query = $modelo->ModificarPass($correo, $pass, $usuario);
-            if ($query) {
-                $data = array("ind" => '1', "Mensaje" => "Exitoso");
-            } else {
-                $data = array("ind" => '0', "Mensaje" => "Error  ");
-            }
-            echo json_encode($data);
-            break;
-
-        case 'inicio':
-            
-            $usuario = $_POST["a"];
-            $contrasena = $_POST["b"];          
-            
-            $resultado = $modelo->loguear($usuario,$contrasena);
-            $filas = pg_numrows($resultado);            
-            $alldatosfilas = pg_fetch_object($resultado);            
-            if ($filas>0) {
-                //creo sesion
-                $_SESSION["idrol"] = $alldatosfilas->id_rol;
-                $_SESSION["idusuario"] = $alldatosfilas->id_usuario;
-                $_SESSION["nombreusuario"] = $alldatosfilas->usuario;
-                $_SESSION["apellidousuario"] = $alldatosfilas->nombres;
-
-                $datos = array(1,'Usuario Correcto'); 
-                echo json_encode($datos);
-
-            }else{
-                $datos = array(0,'Usuario InCorrecto'.pg_result_error($resultado)); 
-                echo json_encode($datos);
-            }
-        break;
-
-        case "CargarRoles":
-            $info = $modelo->CargarRoles();
+  
+        case "ListarMarca":
+            $info = $modelo->ListarMarca();
             while ($dataModel = pg_fetch_object($info)) {
-                echo '<option value="' . $dataModel->id_rol . '">' . $dataModel->descripcion . '</option>';
-            }
-            break;
-            
-        case "ListarUsuarios":
-            $info = $modelo->ListarUsuarios();
-            while ($dataModel = pg_fetch_object($info)) {
-                if($dataModel->estado == 1){
+                if($dataModel->estado_mar == 1){
                     $estado='Activo';
                 }else{
                     $estado='Inactivo';
                 }
                 echo '
                 <tr>
-                    <th>'.$dataModel->nombres.'</th>
-                    <th>'.$dataModel->correo.'</th>
-                    <th>'.$dataModel->telefono.'</th>
-                    <th>'.$dataModel->usuario.'</th>
-                    <th>'.$dataModel->rol.'</th>
+                    <th>'.$dataModel->nombre_mar.'</th>
                     <th>'.$estado.'</th>
                     <th>
-                        <button type="button" onClick="EditarUsuario('.$dataModel->id_usuario.');" class="btn btn-primary btn-xs">Editar</button>
-                        <button type="button" onClick="EliminarUsuario('.$dataModel->id_usuario.');" class="btn btn-danger btn-xs">Eliminar</button>
+                        <button type="button" onClick="EditarMarca('.$dataModel->id_marca.');" class="btn btn-primary btn-xs">Editar</button>
+                        <button type="button" onClick="EliminarMarca('.$dataModel->id_marca.');" class="btn btn-danger btn-xs">Eliminar</button>
                     </th>
                 </tr>
                 ';
@@ -76,61 +27,43 @@
             break;
             
 
-        case 'GuardarUsuario':
-          
-    
-            $cboIdRol = $_POST["cboIdRol"];
-            $txtNombre = $_POST["txtNombre"];
-            $txtCorreo = $_POST["txtCorreo"];
-            $txtCelular = $_POST["txtCelular"];
-            $txtUsuario = $_POST["txtUsuario"];
-            $txtClave = $_POST["txtClave"];
-            $cboEst = $_POST["cboEst"];
-            
-            if (empty($_POST["txtIdUsu"])) {
+        case 'GuardarMarca':
+            $txtMarca = $_POST["txtMarca"];
+            $estado = $_POST["cboEst"];
+
+            if (empty($_POST["txtIdMarca"])) {
     
                 if ($modelo->Registrar(
-                    $cboIdRol,
-                    $txtNombre,
-                    $txtCorreo,
-                    $txtCelular,
-                    $txtUsuario,
-                    $txtClave,
-                    $cboEst
+                    $txtMarca
                 )) {
                     echo "Registrado Exitosamente";
                 } else {
-                    echo "Usuario no ha podido ser registado.";
+                    echo "No ha podido ser registado.";
                 }
             } else {
     
                 if ($modelo->Modificar(
-                    $_POST["txtIdUsu"],
-                    $cboIdRol,
-                    $txtNombre,
-                    $txtCorreo,
-                    $txtCelular,
-                    $txtUsuario,
-                    $txtClave,
-                    $cboEst
+                    $_POST["txtIdMarca"],
+                    $txtMarca,
+                    $estado
                 )) {
-                    echo "Informacion del Usuario ha sido actualizada";
+                    echo "Informacion del Marca ha sido actualizada";
                 } else {
-                    echo "Informacion del usuario no ha podido ser actualizada.";
+                    echo "Informacion del No ha podido ser actualizada.";
                 }
             }
     
             break;
 
-        case 'EditarUsuario':
+        case 'EditarMarca':
               
             $id = $_POST["id"];
-            $info = $modelo->EditarUsuario($id);
+            $info = $modelo->EditarMarca($id);
             $dataModel = pg_fetch_object($info);
             echo json_encode($dataModel);
             break;
         
-        case 'EliminarUsuario':
+        case 'EliminarMarca':
               
             $id = $_POST["id"];
 
@@ -139,7 +72,7 @@
             )) {
                 echo "Eliminado Exitosamente";
             } else {
-                echo "Usuario no ha podido ser eliminado.";
+                echo "Marca no ha podido ser eliminado.";
             }
             break;
 
