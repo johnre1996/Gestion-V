@@ -3,10 +3,10 @@ $(document).on("ready", Primera);
 
 function Primera() {
     $("#formulario").hide();
-    CargarRoles();
-    ListarUsuarios();
+    CargarMarcas();
+    ListarVehiculos();
     $("#botonNew").click(MostarFormulario);
-    $("form#formularioUsu").submit(GuardarUsuario);
+    $("form#formularioUsu").submit(GuardarVehiculo);
     
 }
 
@@ -16,7 +16,7 @@ function MostarFormulario() {
     $("#lista").hide();
     $("#campoEstado").hide();
     $("#campoClave").show();
-    $("#txtUsuarioId").attr("readonly", false);
+    $("#txtVehiculo").attr("readonly", false);
 }
 
 function OcultarFormulario() {
@@ -26,63 +26,73 @@ function OcultarFormulario() {
 }
 
 function LimpiarFormulario() {
-    $("#txtIdUsuId").val("");
-    $("#txtNombreId").val("");
-    $("#txtCorreoId").val("");
-    $("#txtCelularId").val("");
-    $("#txtUsuarioId").val("");
-    $("#txtClaveId").val("");
-    $("#cboEstId").val(1);
+    $("#txtIdVehiculo").val("");
+    $("#txtIdentificador").val("");
+    $("#txtNombre").val("");
+    $("#txtPlaca").val("");
+    $("#txtModelo").val("");
+    $("#txtClase").val("");
+    $("#txtColor").val("");
+    $("#txtAnio").val("");
+    $("#txtCilindraje").val("");
+    $("#txtMotor").val("");
+    $("#txtChasis").val("");
+    $("#txtCombustible").val("");
+    $("#cboEst").val(1);
     
 }
 
-function CargarRoles() {
-    $.post('./Controlador/vehiculo.php?chasi=CargarRoles',function(r) {
-        $("#cboIdRol").html(r);
+function CargarMarcas() {
+    $.post('./Controlador/vehiculo.php?chasi=CargarMarcas',function(r) {
+        $("#cboMarca").html(r);
     });
 }
 
-function ListarUsuarios() {
-    $.post('./Controlador/vehiculo.php?chasi=ListarUsuarios',function(r) {
-        $("#dataUsuario").html(r);
+function ListarVehiculos() {
+    $.post('./Controlador/vehiculo.php?chasi=ListarVehiculos',function(r) {
+        $("#dataVehiculo").html(r);
     });
 }
 
-function GuardarUsuario(a) {
+function GuardarVehiculo(a) {
     a.preventDefault();
-    //console.log($("#formularioUsu").serialize());
-    $.post('./Controlador/vehiculo.php?chasi=GuardarUsuario',$("#formularioUsu").serialize(), function(r) {
+    $.post('./Controlador/vehiculo.php?chasi=GuardarVehiculo',$("#formularioUsu").serialize(), function(r) {
         swal("Mensaje del Sistema", r, "success");
         OcultarFormulario();
         LimpiarFormulario();
-        ListarUsuarios();
+        ListarVehiculos();
     });
 }
 
-function EditarUsuario(id) {
+function EditarVehiculo(id) {
     $("#formulario").show();
     $("#botonNew").hide();
     $("#lista").hide();
     $("#campoEstado").show();
     $("#campoClave").hide();
-    $("#txtUsuarioId").attr("readonly", true);
-    $.post('./Controlador/vehiculo.php?chasi=EditarUsuario',{id:id}, function(r) {
+    $("#txtVehiculo").attr("readonly", true);
+    $.post('./Controlador/vehiculo.php?chasi=EditarVehiculo',{id:id}, function(r) {
          var info = $.parseJSON(r);
-        $("#txtIdUsuId").val(info.id_usuario);
-        $("#txtNombreId").val(info.nombres);
-        $("#txtCorreoId").val(info.correo);
-        $("#txtCelularId").val(info.telefono);
-        $("#txtUsuarioId").val(info.usuario);
-        $("#txtClaveId").val("dsdsds5d");
-        
-        $("#cboIdRol").val(info.id_rol);
-        $("#cboIdRol").trigger("change");
-        $("#cboEstId").val(info.estado);
-        $("#cboEstId").trigger("change");
+         $("#txtIdVehiculo").val(info.id_vehiculo);
+         $("#txtIdentificador").val(info.identificador_veh);
+         $("#txtNombre").val(info.nombre_veh);
+         $("#txtPlaca").val(info.placa_veh);
+         $("#cboMarca").val(info.id_marca);
+         $("#cboMarca").trigger("change");
+         $("#txtModelo").val(info.modelo_veh);
+         $("#txtClase").val(info.clase_veh);
+         $("#txtColor").val(info.color_veh);
+         $("#txtAnio").val(info.anio_veh);
+         $("#txtCilindraje").val(info.cilindraje_veh);
+         $("#txtMotor").val(info.c_motor_veh);
+         $("#txtChasis").val(info.c_chasis_veh);
+         $("#txtCombustible").val(info.t_combustible_veh);
+         $("#cboEst").val(info.estado_veh);
+         $("#cboEst").trigger("change");
     });
 }
 
-function EliminarUsuario(id) {
+function EliminarVehiculo(id) {
     swal({
         title: "¿Seguro que deseas eliminar el registro?",
         text: "Esta acción no se puede revertir...",
@@ -93,9 +103,9 @@ function EliminarUsuario(id) {
         confirmButtonText: "Confirmar",
         closeOnConfirm: false },
         function(){
-            $.post('./Controlador/vehiculo.php?chasi=EliminarUsuario', { id: id }, function(r) {
+            $.post('./Controlador/vehiculo.php?chasi=EliminarVehiculo', { id: id }, function(r) {
                 swal("Mensaje del Sistema", r, "success");
-                ListarUsuarios();
+                ListarVehiculos();
             });
         });
 }

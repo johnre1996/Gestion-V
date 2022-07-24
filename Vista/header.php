@@ -19,7 +19,7 @@ $objeto = new rol();
   <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
  -->
   <!-- Bootstrap core CSS -->
-  <link href="Cliente/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="Cliente/bootstrap/css/bootstrap.min.css?ds=688" rel="stylesheet">
   <!--external css-->
   <link href="Cliente/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
   <!-- Custom styles for this template -->

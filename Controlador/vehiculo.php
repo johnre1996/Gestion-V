@@ -9,8 +9,8 @@
 
             $pass = $_POST["txtConfirmarPass"];
             $correo = $_POST["mail"];
-            $usuario = $_POST["usuario"];
-            $query = $modelo->ModificarPass($correo, $pass, $usuario);
+            $vehiculo = $_POST["vehiculo"];
+            $query = $modelo->ModificarPass($correo, $pass, $vehiculo);
             if ($query) {
                 $data = array("ind" => '1', "Mensaje" => "Exitoso");
             } else {
@@ -21,32 +21,32 @@
 
        
 
-        case "CargarRoles":
-            $info = $modelo->CargarRoles();
+        case "CargarMarcas":
+            $info = $modelo->CargarMarcas();
             while ($dataModel = pg_fetch_object($info)) {
-                echo '<option value="' . $dataModel->id_rol . '">' . $dataModel->descripcion . '</option>';
+                echo '<option value="' . $dataModel->id_marca . '">' . $dataModel->nombre_mar . '</option>';
             }
             break;
             
-        case "ListarUsuarios":
-            $info = $modelo->ListarUsuarios();
+        case "ListarVehiculos":
+            $info = $modelo->ListarVehiculos();
             while ($dataModel = pg_fetch_object($info)) {
-                if($dataModel->estado == 1){
+                if($dataModel->estado_veh == 1){
                     $estado='Activo';
                 }else{
                     $estado='Inactivo';
                 }
                 echo '
                 <tr>
-                    <th>'.$dataModel->nombres.'</th>
-                    <th>'.$dataModel->correo.'</th>
-                    <th>'.$dataModel->telefono.'</th>
-                    <th>'.$dataModel->usuario.'</th>
-                    <th>'.$dataModel->rol.'</th>
+                    <th>'.$dataModel->identificador_veh.'</th>
+                    <th>'.$dataModel->nombre_veh.'</th>
+                    <th>'.$dataModel->placa_veh.'</th>
+                    <th>'.$dataModel->modelo_veh.'</th>
+                    <th>'.$dataModel->clase_veh.'</th>
                     <th>'.$estado.'</th>
                     <th>
-                        <button type="button" onClick="EditarUsuario('.$dataModel->id_usuario.');" class="btn btn-primary btn-xs">Editar</button>
-                        <button type="button" onClick="EliminarUsuario('.$dataModel->id_usuario.');" class="btn btn-danger btn-xs">Eliminar</button>
+                        <button type="button" onClick="EditarVehiculo('.$dataModel->id_vehiculo.');" class="btn btn-primary btn-xs">Editar</button>
+                        <button type="button" onClick="EliminarVehiculo('.$dataModel->id_vehiculo.');" class="btn btn-danger btn-xs">Eliminar</button>
                     </th>
                 </tr>
                 ';
@@ -54,61 +54,78 @@
             break;
             
 
-        case 'GuardarUsuario':
+        case 'GuardarVehiculo':
           
     
-            $cboIdRol = $_POST["cboIdRol"];
+            $txtIdentificador = $_POST["txtIdentificador"];
             $txtNombre = $_POST["txtNombre"];
-            $txtCorreo = $_POST["txtCorreo"];
-            $txtCelular = $_POST["txtCelular"];
-            $txtUsuario = $_POST["txtUsuario"];
-            $txtClave = $_POST["txtClave"];
+            $txtPlaca = $_POST["txtPlaca"];
+            $cboMarca = $_POST["cboMarca"];
+            $txtModelo = $_POST["txtModelo"];
+            $txtClase = $_POST["txtClase"];
+            $txtColor = $_POST["txtColor"];
+            $txtAnio = $_POST["txtAnio"];
+            $txtCilindraje = $_POST["txtCilindraje"];
+            $txtMotor = $_POST["txtMotor"];
+            $txtChasis = $_POST["txtChasis"];
+            $txtCombustible = $_POST["txtCombustible"];
             $cboEst = $_POST["cboEst"];
             
-            if (empty($_POST["txtIdUsu"])) {
+            if (empty($_POST["txtIdVehiculo"])) {
     
                 if ($modelo->Registrar(
-                    $cboIdRol,
+                    $txtIdentificador,
                     $txtNombre,
-                    $txtCorreo,
-                    $txtCelular,
-                    $txtUsuario,
-                    $txtClave,
+                    $txtPlaca,
+                    $cboMarca,
+                    $txtModelo,
+                    $txtClase,
+                    $txtColor,
+                    $txtAnio,
+                    $txtCilindraje,
+                    $txtMotor,
+                    $txtChasis,
+                    $txtCombustible,
                     $cboEst
                 )) {
                     echo "Registrado Exitosamente";
                 } else {
-                    echo "Usuario no ha podido ser registado.";
+                    echo "Vehiculo no ha podido ser registado.";
                 }
             } else {
-    
                 if ($modelo->Modificar(
-                    $_POST["txtIdUsu"],
-                    $cboIdRol,
+                    $_POST["txtIdVehiculo"],
+                    $txtIdentificador,
                     $txtNombre,
-                    $txtCorreo,
-                    $txtCelular,
-                    $txtUsuario,
-                    $txtClave,
+                    $txtPlaca,
+                    $cboMarca,
+                    $txtModelo,
+                    $txtClase,
+                    $txtColor,
+                    $txtAnio,
+                    $txtCilindraje,
+                    $txtMotor,
+                    $txtChasis,
+                    $txtCombustible,
                     $cboEst
                 )) {
-                    echo "Informacion del Usuario ha sido actualizada";
+                    echo "Informacion del Vehiculo ha sido actualizada";
                 } else {
-                    echo "Informacion del usuario no ha podido ser actualizada.";
+                    echo "Informacion del vehiculo no ha podido ser actualizada.";
                 }
             }
     
             break;
 
-        case 'EditarUsuario':
+        case 'EditarVehiculo':
               
             $id = $_POST["id"];
-            $info = $modelo->EditarUsuario($id);
+            $info = $modelo->EditarVehiculo($id);
             $dataModel = pg_fetch_object($info);
             echo json_encode($dataModel);
             break;
         
-        case 'EliminarUsuario':
+        case 'EliminarVehiculo':
               
             $id = $_POST["id"];
 
@@ -117,7 +134,7 @@
             )) {
                 echo "Eliminado Exitosamente";
             } else {
-                echo "Usuario no ha podido ser eliminado.";
+                echo "Vehiculo no ha podido ser eliminado.";
             }
             break;
 
