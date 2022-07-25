@@ -65,6 +65,7 @@ function GuardarVehiculo(a) {
 }
 
 function EditarVehiculo(id) {
+    CargarMarcas();
     $("#formulario").show();
     $("#botonNew").hide();
     $("#lista").hide();

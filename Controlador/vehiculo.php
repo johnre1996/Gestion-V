@@ -42,7 +42,7 @@
                     <th>'.$dataModel->nombre_veh.'</th>
                     <th>'.$dataModel->placa_veh.'</th>
                     <th>'.$dataModel->modelo_veh.'</th>
-                    <th>'.$dataModel->clase_veh.'</th>
+                    <th>'.$dataModel->marca.'</th>
                     <th>'.$estado.'</th>
                     <th>
                         <button type="button" onClick="EditarVehiculo('.$dataModel->id_vehiculo.');" class="btn btn-primary btn-xs">Editar</button>

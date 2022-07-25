@@ -10,7 +10,7 @@
 
         public function CargarRoles(){
             global $conexion; 
-            $consulta = "SELECT * FROM roles";
+            $consulta = "select * from roles where estado=1";
             $resultado = pg_query($conexion,$consulta);            
             return $resultado;
         }
