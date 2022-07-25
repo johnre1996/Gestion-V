@@ -100,10 +100,10 @@ $objeto = new rol();
           <li class="sub-menu">
             <a href="javascript:;">
               <i class="fa fa-book"></i>
-              <span>Gestiòn Guardiania</span>
+              <span>Gestiòn Herramientas</span>
               </a>
             <ul class="sub">
-              <li><a href="grupoTrabajo.php">Grupo trabajo</a></li>
+              <li><a href="herramienta.php">Herramientas</a></li>
             </ul>
           </li>
           <li class="mt">
